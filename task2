@@ -1,0 +1,20 @@
+
+ def circle(r)
+   r=20
+   for y in 0..r*2
+     tilt=(Math.sqrt((r**2)-((y-r)**2))).round
+        for x in 0..2*r
+          if x==(tilt+r) || x==(r-tilt)
+            print "*"
+          else
+            print "  "
+          end
+
+        end
+     puts
+   end
+
+
+ end
+ circle3
+

@@ -1,0 +1,22 @@
+puts "Enter size matrix i"
+i=gets.chomp.to_i
+puts "Enter size matrix j"
+j=gets.chomp.to_i
+def matrix(imax=6,jmax=6)
+  for i in 1..imax
+    for j in 1..jmax
+
+      if i==j
+        print 1
+      elsif j==imax
+        print "\n"
+      else
+        print 0
+      end
+
+    end
+  end
+
+end
+
+matrix(i,j)

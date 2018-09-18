@@ -1,0 +1,21 @@
+
+array = [[1, 2, 3, 4, '1'], ['2', '5', '10'], [111, 222, 333, 444], ['i', 'love', 'ruby'], { key: 'value' }, [[['text', 100_000]]]]
+
+
+def get_all(array, type=nil)
+
+  array.each do |arr|
+     if arr.is_a?(Array)
+      get_all(arr, type)
+      else
+        puts arr if arr.is_a?(type)
+      end
+    end
+
+
+
+end
+
+
+ get_all array, Integer
+
