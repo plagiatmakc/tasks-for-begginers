@@ -1,22 +1,26 @@
-puts "Enter size matrix i"
-i=gets.chomp.to_i
-puts "Enter size matrix j"
-j=gets.chomp.to_i
-def matrix(imax=6,jmax=6)
-  for i in 1..imax
-    for j in 1..jmax
+class Three
+  attr_reader :imax, :jmax
 
-      if i==j
-        print 1
-      elsif j==imax
-        print "\n"
-      else
-        print 0
-      end
-
-    end
+  def initialize
+    puts "Enter size matrix i"
+    @imax = gets.chomp.to_i
+    puts "Enter size matrix j"
+    @jmax = gets.chomp.to_i
+    raise ArgumentError, 'Some argument is not numeric or less 1' unless (@imax>0 && @jmax>0)
+    show_matrix
   end
 
+  def show_matrix
+    (1..@imax).each do |i|
+      (1..@jmax).each do |j|
+        if i == j
+          print 1
+        elsif j == @imax
+          puts
+        else
+          print 0
+        end
+      end
+    end
+  end
 end
-
-matrix(i,j)

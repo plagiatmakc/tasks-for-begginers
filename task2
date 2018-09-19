@@ -1,20 +1,24 @@
+class Two
+  attr_reader :r
 
- def circle(r)
-   r=20
-   for y in 0..r*2
-     tilt=(Math.sqrt((r**2)-((y-r)**2))).round
-        for x in 0..2*r
-          if x==(tilt+r) || x==(r-tilt)
-            print "*"
-          else
-            print "  "
-          end
+  def initialize
+    puts "Input a radius of circle"
+    @r = gets.chomp.to_i
+    raise ArgumentError, 'Radius must be a numeric and be more 0!' unless @r>0
+    draw_circle
+  end
 
+  def draw_circle
+    (0..@r*2).each do |y|
+      tilt = (Math.sqrt((@r**2) - ((y - @r)**2))).round
+      (0..@r*2).each do |x|
+        if x == (@r - tilt) ||  x == (@r + tilt)
+          print "*"
+        else
+          print "  "
         end
-     puts
-   end
-
-
- end
- circle3
-
+      end
+      puts
+    end
+  end
+end
