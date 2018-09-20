@@ -7,12 +7,12 @@ class Four
   end
 
   def find_in_hash_recurs(hash, found_key)
-    hash.each do |key, val|
+    hash.each do |_key, val|
       if hash.has_key?(found_key)
       puts "Value of #{found_key} => #{hash[found_key]}"
         break
       elsif val.is_a?(Hash)
-        find_in_hash_recurs(val,found_key)
+        find_in_hash_recurs(val, found_key)
       end
     end
   end
