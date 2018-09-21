@@ -1,35 +1,43 @@
 class Ranking
-  attr_reader :results
+  attr_reader :results, :array_of_strings
 
   def initialize
     @results = {}
-    read_file
+    @array_of_strings = []
+    puts "input a string or name of file, for calculation input strings just press Enter"
+    input = gets.chomp
+    while input != ""
+    File.file?(input) ? read_file(input) : work_with_string(input)
+    input = gets.chomp
+    end
+    read_array
+  end
+
+  def work_with_string(sample_string)
+    @array_of_strings << sample_string
+  end
+
+  def read_file(input_file)
+    File.readlines(input_file).each do |line|
+      get_result(line)
+    end
     print_results
   end
 
-  def read_file
-    fname = 'input_sample'
-    File.readlines(fname).each do |line|
+  def read_array
+    @array_of_strings.each do |line|
       get_result(line)
     end
+    @array_of_strings.empty? ? exit : print_results
   end
 
   def get_result(str)
-    team1, team2 = str.chomp.split(", ")
-    score1 = team1.scan(/\d+/)[0]
-    score2 = team2.scan(/\d+/)[0]
-    team1_name = team1.chomp(score1).strip
-    team2_name = team2.chomp(score2).strip
-    if score1 > score2
-      @results.has_key?(team1_name) ? @results[team1_name] += 3 : @results[team1_name] = 3
-      @results.has_key?(team2_name) ? @results[team2_name] += 0 : @results[team2_name] = 0
-    elsif score1 < score2
-      @results.has_key?(team2_name) ? @results[team2_name] += 3 : @results[team2_name] = 3
-      @results.has_key?(team1_name) ? @results[team1_name] += 0 : @results[team1_name] = 0
-    elsif score1 == score2
-      @results.has_key?(team1_name) ? @results[team1_name] += 1 : @results[team1_name] = 1
-      @results.has_key?(team2_name) ? @results[team2_name] += 1 : @results[team2_name] = 1
-    end
+    regx_str = /((?<team1>\w* ?\w+) (?<goals1>\d+), (?<team2>\w* ?\w+) (?<goals2>\d+))/.match(str)
+    @results[regx_str[:team1]] = 0 unless @results.has_key?(regx_str[:team1])
+    @results[regx_str[:team2]] = 0 unless @results.has_key?(regx_str[:team2])
+    @results[regx_str[:team1]] += 3 if regx_str[:goals1] > regx_str[:goals2]
+    @results[regx_str[:team2]] += 3 if regx_str[:goals1] < regx_str[:goals2]
+    (@results[regx_str[:team1]] += 1; @results[regx_str[:team2]] += 1) if regx_str[:goals1] == regx_str[:goals2]
   end
 
   def print_results
@@ -40,4 +48,4 @@ class Ranking
     end
   end
 end
-run = Ranking.new
+  run = Ranking.new
