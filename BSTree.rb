@@ -11,7 +11,7 @@ end
 class BSTree
   attr_accessor :root_node
 
-  def initialize(root_value=nil)
+  def initialize(root_value = nil)
     @root_node = Node.new(root_value)
   end
 
@@ -20,15 +20,17 @@ class BSTree
       puts("Tree is empty")
     elsif search_data == current_node.data
       return current_node
-    elsif search_data < current_node.data
+    elsif  current_node.left && search_data < current_node.data
       find(search_data, current_node.left)
-    elsif search_data > current_node.data
+    elsif  current_node.right  && search_data > current_node.data
       find(search_data, current_node.right)
+    else
+      p "Sorry, but that node not exist!"
+      return
     end
-
   end
 
-  def insert(data, current_node=nil)
+  def insert(data, current_node = nil)
     @root_node.data = data if @root_node.data.nil?
     current_node.nil? ? current_node = @root_node : current_node = current_node
     if data < current_node.data && current_node.left.nil?
@@ -42,49 +44,44 @@ class BSTree
     end
   end
 
-  def remove(data, current_node = nil)
-    return puts("Tree is empty") if @root_node.data.nil?
-     current_node.nil? ? current_node = @root_node : current_node = current_node
-    if data > current_node.data
-      remove(data, current_node.right)
-    elsif data < current_node.data
-      remove(data, current_node.left)
-    elsif data == current_node.data
-     parent = parent_node(data)
-     parent.left = nil if parent.left && parent.left == ObjectSpace._id2ref(current_node.object_id)
-     parent.right = nil if parent.right && parent.right == ObjectSpace._id2ref(current_node.object_id)
-     current_node.data = nil
+  # Remove children with removing node
+  def remove_forced(data, _current_node = nil)
+    current_node = find(data)
+    parent = parent_node(data)
+    parent.left = nil if parent.left && parent.left == ObjectSpace._id2ref(current_node.object_id)
+    parent.right = nil if parent.right && parent.right == ObjectSpace._id2ref(current_node.object_id)
+  end
 
-      # THIS IS A TRULY ALGORITM FOR REMOVE BSTree NODES (https://ru.wikipedia.org/wiki/Двоичное_дерево_поиска)
-      # parent = parent_node(data)
-      # if current_node.left.nil? && current_node.right.nil?
-      #   parent.left = nil if parent.left &&  parent.left.data == data
-      #   parent.right = nil if parent.right &&  parent.right.data == data
-      #   current_node.data = nil
-      # elsif current_node.left.nil? && !current_node.right.nil?
-      #   parent.left = current_node.right if  parent.left &&  parent.left.data == data
-      #   parent.right = current_node.right if parent.right &&  parent.right.data == data
-      #   current_node.data = nil
-      # elsif !current_node.left.nil? && current_node.right.nil?
-      #   parent.left = current_node.left if parent.left && parent.left.data == data
-      #   parent.right = current_node.left if parent.right && parent.right.data == data
-      #   current_node.data = nil
-      # elsif !current_node.left.nil? && !current_node.right.nil?
-      #   if current_node.right.left.nil?
-      #     current_node.right.left = current_node.left
-      #     current_node.left = nil
-      #     remove(data)
-      #   else
-      #     tmp = current_node.right.left
-      #     while tmp.left
-      #       tmp = tmp.left
-      #     end
-      #     tmp.left = current_node.left
-      #     current_node.left = nil
-      #     remove(data)
-      #   end
-      # end
-
+  #Save children from remove node
+  def remove_save_children(data, _current_node = nil)
+    current_node = find(data)
+    parent = parent_node(data)
+    if current_node.left.nil? && current_node.right.nil?
+      parent.left = nil if parent.left &&  parent.left.data == data
+      parent.right = nil if parent.right &&  parent.right.data == data
+      current_node.data = nil
+    elsif current_node.left.nil? && current_node.right
+      parent.left = current_node.right if  parent.left &&  parent.left.data == data
+      parent.right = current_node.right if parent.right &&  parent.right.data == data
+      current_node.data = nil
+    elsif current_node.left && current_node.right.nil?
+      parent.left = current_node.left if parent.left && parent.left.data == data
+      parent.right = current_node.left if parent.right && parent.right.data == data
+      current_node.data = nil
+    elsif current_node.left && current_node.right
+      if current_node.right.left.nil?
+        current_node.right.left = current_node.left
+        current_node.left = nil
+        remove_save_children(data)
+      else
+        tmp = current_node.right.left
+        while tmp.left
+          tmp = tmp.left
+        end
+        tmp.left = current_node.left
+        current_node.left = nil
+        remove_save_children(data)
+      end
     end
   end
 
@@ -106,11 +103,12 @@ test_array = [100, 200, 50, 150, 10, 80, 180, 160, 70, 65, 75, 90, 95, 5, 250, 1
 n = BSTree.new()
 test_array.each { |item| n.insert(item)}
 p n
-p n.find(50)
-obj = n.find(70).object_id
-n.remove(80)
-p n.find(50)
+p n.find(150)
+# obj = n.find(150).object_id
+ n.remove_save_children(150)
+p n.find(150)
 # p n.find(100).object_id
-p ObjectSpace._id2ref obj
+# p ObjectSpace._id2ref obj
+
 
 
