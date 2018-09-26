@@ -1,9 +1,4 @@
+# input 'ruby' or '<3 ruby'
 class One
-  (1..30).each do |i|
-    if (i == 10 or i == 20 or i == 25)
-      puts 'ruby'
-    else
-      puts '<3 ruby'
-    end
-  end
+  (1..30).each { |i| [10, 20, 25].include?(i) ? puts('ruby') : puts('<3 ruby') }
 end

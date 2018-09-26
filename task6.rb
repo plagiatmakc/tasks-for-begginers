@@ -1,3 +1,4 @@
+# Get array elements of of different types
 class Six
   attr_reader :array, :array_of_types
 
